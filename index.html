@@ -64,7 +64,7 @@
       }
       .gift-card img {
         width: 180px; /* chiều rộng cố định */
-        height: 220px; /* chiều cao cố định */
+        height: 200px; /* chiều cao cố định */
         object-fit: cover; /* cắt ảnh cho vừa khung, không méo */
         border-radius: 12px;
         box-shadow: 0 0 20px rgba(255, 105, 180, 0.8);
@@ -174,8 +174,13 @@
             showWish(
               "Chúc cậu có một ngày sinh nhật thật vui vẻ, hạnh phúc và tràn ngập yêu thương! 💖🎂🎉🌙✌️🥚"
             );
-          }, 3000);
+          }, 4000);
 
+          setTimeout(() => {
+            showWish(
+              "Chúc cậu tuổi mới ngày càng xinh đẹp và đạt được những điều mình mong muốn 🎀✨"
+            );
+          }, 11000);
           // Hiện ảnh thẳng hàng sau lời chúc
           setTimeout(() => {
             giftContainer.style.display = "flex";
@@ -185,7 +190,7 @@
                 card.classList.add("show");
               }, i * 300);
             });
-          }, 6000);
+          }, 16500);
         }
       }, 1000);
 
@@ -205,10 +210,15 @@
       // Typing cho lời chúc
       function showWish(text) {
         wishEl.style.display = "block";
+
+        // tạo <p> mới cho mỗi lời chúc
+        const p = document.createElement("p");
+        wishEl.appendChild(p);
+
         let i = 0;
         function typing() {
           if (i < text.length) {
-            wishEl.textContent += text[i++];
+            p.textContent += text[i++];
             setTimeout(typing, 80);
           }
         }
