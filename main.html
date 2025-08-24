@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Happy Birthday 🎂</title>
+    <style>
+      body {
+        margin: 0;
+        background: #000;
+        overflow: hidden;
+        color: #fff;
+        font-family: "Comic Sans MS", cursive, sans-serif;
+      }
+      canvas {
+        display: block;
+      }
+      #countdown {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 120px;
+        color: #ff69b4;
+        text-shadow: 0 0 20px #fff, 0 0 30px #ff69b4;
+        z-index: 10;
+      }
+      #main-text {
+        position: absolute;
+        top: 30%;
+        width: 100%;
+        text-align: center;
+        font-size: 60px;
+        color: #ff69b4;
+        text-shadow: 2px 2px 8px rgba(255, 255, 255, 0.7);
+        z-index: 5;
+        display: none;
+      }
+      #wish {
+        position: absolute;
+        top: 45%;
+        width: 100%;
+        text-align: center;
+        font-size: 28px;
+        color: #fff;
+        text-shadow: 1px 1px 6px rgba(255, 105, 180, 0.8);
+        z-index: 5;
+        display: none;
+      }
+      /* Container ảnh */
+      #gift-container {
+        position: absolute;
+        bottom: 5%;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 20px; /* khoảng cách giữa ảnh */
+        z-index: 6;
+        display: none;
+      }
+      .gift-card {
+        opacity: 0;
+        transform: scale(0);
+        transition: all 0.8s ease;
+      }
+      .gift-card img {
+        width: 180px; /* chiều rộng cố định */
+        height: 220px; /* chiều cao cố định */
+        object-fit: cover; /* cắt ảnh cho vừa khung, không méo */
+        border-radius: 12px;
+        box-shadow: 0 0 20px rgba(255, 105, 180, 0.8);
+        transition: transform 0.4s ease, box-shadow 0.4s ease;
+      }
+      .gift-card img:hover {
+        transform: scale(1.1); /* phóng to nhẹ khi hover */
+        box-shadow: 0 0 30px rgba(255, 105, 180, 1);
+      }
+      .gift-card.show {
+        opacity: 1;
+        transform: scale(1);
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="matrix"></canvas>
+    <div id="countdown">3</div>
+    <div id="main-text"></div>
+    <div id="wish"></div>
+
+    <!-- Container hiển thị ảnh thẳng hàng -->
+    <div id="gift-container">
+      <div class="gift-card">
+        <img
+          src="https://scontent.fhan18-1.fna.fbcdn.net/v/t39.30808-6/467307192_122126299358495652_2502548724927930480_n.jpg?_nc_cat=104&ccb=1-7&_nc_sid=a5f93a&_nc_ohc=BJCG_bHu8vAQ7kNvwGl_LmT&_nc_oc=AdlgnHrFww-pc78oG8edLydp1vwqWwqtTrktVRQ88OqH318uFjUROiV5ajLxoS9zC7o&_nc_zt=23&_nc_ht=scontent.fhan18-1.fna&_nc_gid=T0HO5KZ3hw7b_zG3XVaxXA&oh=00_AfVJxMKn6vThcvzwpw15A5McHJmWedBd9wOKnqXqGHi2aw&oe=68B021EC"
+        />
+      </div>
+      <div class="gift-card">
+        <img src="./902d627302ea8ab4d3fb4.jpg" />
+      </div>
+      <div class="gift-card">
+        <img src="./30777a231aba92e4cbab3.jpg" />
+      </div>
+      <div class="gift-card">
+        <img src="./c6238c40ecd964873dc81.jpg" />
+      </div>
+      <div class="gift-card">
+        <img src="./c8c3afaccf35476b1e242.jpg" />
+      </div>
+    </div>
+
+    <!-- Nhạc nền Happy Birthday (ĐÃ ĐỔI audio -> video) -->
+    <video id="bgm" autoplay loop muted playsinline style="display: none">
+      <source src="./0824.mp4" type="video/mp4" />
+      Trình duyệt của bạn không hỗ trợ phát nhạc.
+    </video>
+
+    <script>
+      const canvas = document.getElementById("matrix");
+      const ctx = canvas.getContext("2d");
+      canvas.height = window.innerHeight;
+      canvas.width = window.innerWidth;
+
+      const letters = "HAPPY BIRTHDAY".split("");
+      const fontSize = 20;
+      const columns = canvas.width / fontSize;
+      const drops = [];
+      for (let x = 0; x < columns; x++)
+        drops[x] = Math.random() * canvas.height;
+
+      function drawRain() {
+        ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = "#ff69b4";
+        ctx.font = fontSize + "px monospace";
+        for (let i = 0; i < drops.length; i++) {
+          const text = letters[Math.floor(Math.random() * letters.length)];
+          ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+          if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+            drops[i] = 0;
+          }
+          drops[i]++;
+        }
+      }
+
+      setInterval(drawRain, 33);
+
+      // Đếm ngược
+      let count = 3;
+      const cdEl = document.getElementById("countdown");
+      const mainText = document.getElementById("main-text");
+      const wishEl = document.getElementById("wish");
+      const giftContainer = document.getElementById("gift-container");
+
+      const countdownInterval = setInterval(() => {
+        count--;
+        if (count > 0) {
+          cdEl.textContent = count;
+        } else {
+          clearInterval(countdownInterval);
+          cdEl.style.display = "none";
+
+          // ===== BẬT NHẠC SAU KHI ĐẾM NGƯỢC XONG =====
+          const bgm = document.getElementById("bgm");
+          bgm.muted = false;
+          bgm.play().catch(() => {
+            // nếu vẫn bị chặn, sẽ phát khi người dùng tương tác
+          });
+          // ============================================
+
+          // Hiện Happy Birthday từng chữ
+          showMainText("HAPPY BIRTHDAY");
+
+          // Hiện lời chúc
+          setTimeout(() => {
+            showWish(
+              "Chúc bạn có một ngày sinh nhật thật vui vẻ, hạnh phúc và tràn ngập yêu thương! 💖🎂🎉"
+            );
+          }, 3000);
+
+          // Hiện ảnh thẳng hàng sau lời chúc
+          setTimeout(() => {
+            giftContainer.style.display = "flex";
+            const cards = document.querySelectorAll(".gift-card");
+            cards.forEach((card, i) => {
+              setTimeout(() => {
+                card.classList.add("show");
+              }, i * 300);
+            });
+          }, 6000);
+        }
+      }, 1000);
+
+      // Typing cho dòng chính
+      function showMainText(text) {
+        mainText.style.display = "block";
+        let i = 0;
+        function typing() {
+          if (i < text.length) {
+            mainText.textContent += text[i++];
+            setTimeout(typing, 400);
+          }
+        }
+        typing();
+      }
+
+      // Typing cho lời chúc
+      function showWish(text) {
+        wishEl.style.display = "block";
+        let i = 0;
+        function typing() {
+          if (i < text.length) {
+            wishEl.textContent += text[i++];
+            setTimeout(typing, 80);
+          }
+        }
+        typing();
+      }
+
+      // Fallback: nếu autoplay vẫn bị chặn, click 1 cái sẽ phát
+      document.addEventListener("click", () => {
+        const bgm = document.getElementById("bgm");
+        bgm.muted = false;
+        bgm.play().catch(() => {});
+      });
+    </script>
+  </body>
+</html>
